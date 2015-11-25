@@ -1,0 +1,70 @@
+body {
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+
+a {
+    color: #00B7FF;
+}
+
+.nickname.pages {
+    background-color: black;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.nickname.pages .qa.form {
+    position: absolute;
+    top: 50%;
+    height: 100px;
+    width: 100%;
+    margin-top: -100px;
+    text-align: center;
+}
+
+.nickname.pages .qa.form .title {
+    color: #fff;
+    font-weight: 100;
+    font-size: 40px;
+}
+
+.nickname.pages .qa.form .usernameInput {
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #fff;
+    outline: none;
+    padding-bottom: 15px;
+    text-align: center;
+    width: 400px;
+    color: #fff;
+    font-weight: 100;
+    font-size: 20px;
+}
+
+.chat.form {
+    position: absolute;
+    left: 20%;
+    top: 20%;
+    background-color: #F4EFEF;
+    padding: 30px;
+}
+
+.chat.form .msgs {
+    width: 350px;
+    height: 300px;
+}
+
+.chat.form .users {
+    float: right;
+    width: 100px;
+    height: 300px;
+    border: 1px solid rgb(169, 169, 169);
+    padding-left: 10px;
+    background-color: white;
+}
+
+
+

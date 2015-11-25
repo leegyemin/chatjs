@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>chat</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://127.0.0.1:8010/socket.io/socket.io.js"></script>
+    <script>
+
+        var socket = io.connect('http://127.0.0.1:8010');
+
+        socket.emit('joinroom', {room: '<%=room%>', nickname: '<%=nickname%>'});
+
+        var nickname = '<%=nickname%>';
+
+        // server push cleint msg
+        socket.on('new', function (nickname) {
+            var d = new Date();
+            var e = formatDate(d);
+
+            $('#msgs').append("[" + e + "]" + nickname + "님이 입장하셨습니다." + "\n");
+
+        });
+
+        // server push cleint msg
+        socket.on('broadcast_msg', function (data) {
+            var d = new Date();
+            var e = formatDate(d);
+            $('#msgs').append("[" + e + "]" + data.user + ' : ' + data.msg + "\n");
+        });
+
+        socket.on("disconnected", function (nickname) {
+            var d = new Date();
+            var e = formatDate(d);
+
+            for (var i = 0; i < $('#users > li').length; i++) {
+                if ($('#users > li')[i].innerHTML === nickname) {
+                    $('#users > li')[i].remove();
+                }
+            }
+
+            $('#msgs').append("[" + e + "]" + nickname + "님이 퇴장하였습니다." + "\n");
+        });
+
+        socket.on("chat_fail", function (data) {
+            alert(data + "님은 이미 접속된 ID 입니다.");
+            //window.history.back();
+        });
+
+        socket.on("user_list", function (data) {
+            $('#users').find("li").remove();
+
+            $('#userselect').find("option").remove();
+            $('#userselect').append($('<option>', {
+                value: "ALL",
+                text: "전체"
+            }));
+
+            for (var i = 0; i < data.length; i++) {
+                $('#users').append("<li>" + data[i] + "</li>");
+                if (nickname != data[i]) {
+                    $("#userselect").append($('<option></option>').html(data[i]));
+                }
+            }
+        });
+
+
+        $(function () {
+            // client 에서 server로 데이터 전송시
+            $("#msgtext").keydown(function (key) {
+                if (key.keyCode == 13) {
+                    messageSend();
+                }
+            });
+
+//    $( "select" ).change(function (e) {
+//        if(e.target.value === "ALL"){
+//          secret = false;
+//        }else{
+//          secret = true;
+//        }
+//     });
+
+        });
+
+        function messageSend() {
+            socket.emit('sendmsg',
+                    {
+                        user: $("#user").text(),
+                        msg: $("#msgtext").val(),
+                        to: $("#userselect option:selected").val()
+                    });
+            $("#msgtext").val("");
+        }
+
+
+        function formatDate(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var second = date.getSeconds();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            var strTime = hours + ':' + minutes + ':' + second + ' ' + ampm;
+
+            return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+        }
+
+
+    </script>
+</head>
+<body>
+<div class="chat form">
+    <div>
+        <h1>방이름 : <%=room%> / nickname : <%= nickname %></h1>
+    </div>
+    <div style="width:480px;">
+        <textarea class="msgs" id="msgs" rows="30" cols="80" readonly>
+        </textarea>
+
+        <div class="users" id="users" rows="30" cols="10" readonly>
+            <h3>참여자</h3>
+        </div>
+    </div>
+    <div>
+        <select id="userselect">
+            <option value="ALL">전체</option>
+        </select>
+        <!-- <label id="user"><%=nickname%></label> -->
+        <input type="text" id="msgtext"/>
+        <input type="button" value="입력" onclick="messageSend()"/>
+    </div>
+</div>
+</body>
+</html>

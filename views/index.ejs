@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $(".usernameInput").keydown(function (key) {
+                if (key.keyCode == 13) {
+                    var nickname = $(".usernameInput").val()
+                    var acUrl = "/chat/room1/" + nickname;
+                    $('#form').attr('action', acUrl);
+                    $("#form").submit();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<form id="form" method="post">
+    <div class="nickname pages">
+        <div class="qa form">
+            <h3 class="title">What's your nickname?</h3>
+            <input class="usernameInput" type="text" maxlength="14">
+        </div>
+    </div>
+</form>
+</body>
+</html>
